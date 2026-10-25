@@ -1,19 +1,12 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, ChevronsLeft, ChevronsRight, Wallet } from 'lucide-react'
-import { NAVIGATION, type NavGroup } from '@/app/navigation'
+import type { NavGroup } from '@/app/navigation'
 import { usePreferences } from '@/app/state/preferences'
-import { useCan } from '@/hooks/useSession'
+import { useVisibleNavigation } from './useVisibleNavigation'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 const BOTTOM_GROUPS = new Set(['config', 'admin'])
-
-export function useVisibleNavigation(): NavGroup[] {
-  const can = useCan()
-  return NAVIGATION.filter((g) => !g.permission || can(g.permission))
-    .map((g) => ({ ...g, items: g.items.filter((i) => !i.permission || can(i.permission)) }))
-    .filter((g) => g.items.length > 0)
-}
 
 export function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const groups = useVisibleNavigation()

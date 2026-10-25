@@ -212,10 +212,11 @@ export function DataTable<T extends RowData>({
 
   // Drop selections for rows that no longer exist (e.g. after delete).
   const selectedIds = Object.keys(table.state.rowSelection ?? {}).filter((id) => table.state.rowSelection[id])
+  const selectedKey = selectedIds.join('|')
   const selectedRows = useMemo(() => {
-    const ids = new Set(selectedIds)
+    const ids = new Set(selectedKey ? selectedKey.split('|') : [])
     return data.filter((r) => ids.has(getRowId(r)))
-  }, [data, getRowId, selectedIds.join('|')]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data, getRowId, selectedKey])
 
   const colById = useMemo(() => new Map(columns.map((c) => [c.id, c])), [columns])
   const rows = table.getRowModel().rows
@@ -316,10 +317,10 @@ export function DataTable<T extends RowData>({
         </div>
       ) : null}
 
-      <div className="bg-card overflow-hidden rounded-lg border">
+      <div className="bg-card overflow-hidden rounded-2xl border border-border/70 shadow-sm">
         <Table aria-label={caption}>
           <caption className="sr-only">{caption}</caption>
-          <TableHeader className="bg-muted/40">
+          <TableHeader className="bg-muted/30">
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id} className="hover:bg-transparent">
                 {group.headers.map((header) => {

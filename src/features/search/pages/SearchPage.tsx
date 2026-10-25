@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ChevronRight, Search, SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,12 +8,13 @@ import { EmptyState } from '@/components/feedback/Feedback'
 import { useDb } from '@/hooks/useData'
 import { useRole } from '@/hooks/useSession'
 import { searchAll, type SearchResult } from '@/lib/search'
+import { useOnChange } from '@/hooks/useOnChange'
 
 export default function SearchPage() {
   const [params, setParams] = useSearchParams()
   const q = params.get('q') ?? ''
   const [input, setInput] = useState(q)
-  useEffect(() => setInput(q), [q])
+  useOnChange([q], () => setInput(q))
   const db = useDb()
   const role = useRole()
   const results = useMemo(() => searchAll(db, q, role, 200), [db, q, role])

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Ban, CheckCircle2, FileText, Pencil, Plus, Send, Trash2, Wallet } from 'lucide-react'
 import type { SupplierBill } from '@/domain'
@@ -10,7 +10,7 @@ import { ActivityTimeline, DetailList, Money } from '@/components/data-display/D
 import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
 import { RecordSheet } from '@/components/dialogs/FormDialog'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useBillViews, useCollection, useLookups, type BillView } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
@@ -21,6 +21,7 @@ import { formatCurrency, formatDate } from '@/lib/formatting'
 import { daysBetween, todayISO } from '@/lib/dates'
 import { SupplierBillFormDialog } from '@/features/procurement/components/SupplierBillFormDialog'
 import { RecordPaymentDialog, RowActions } from '@/features/procurement/components/shared'
+import { useOnChange } from '@/hooks/useOnChange'
 
 type Row = SupplierBill & { view: BillView; displayStatus: string }
 
@@ -43,17 +44,17 @@ export default function SupplierBillsPage() {
   const billParam = params.get('bill')
 
   // Deep link from other screens: /procurement/bills?bill=<id> opens that bill.
-  useEffect(() => {
+  useOnChange([billParam], () => {
     if (billParam) setDetailId(billParam)
-  }, [billParam])
+  })
 
   // Arriving from a purchase order ("Record supplier bill") opens a pre-filled form.
-  useEffect(() => {
+  useOnChange([poParam, canEdit], () => {
     if (poParam && canEdit) {
       setEditing(undefined)
       setFormOpen(true)
     }
-  }, [poParam, canEdit])
+  })
 
   const rows = useMemo<Row[]>(
     () =>

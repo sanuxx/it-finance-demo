@@ -17,6 +17,7 @@ import { usePermission } from '@/hooks/useSession'
 import { useAction } from '@/hooks/useAction'
 import { organizationRepository, useDemoStore } from '@/services'
 import { STORAGE_NAMESPACE, STORAGE_VERSION, readJSON, writeJSON } from '@/lib/storage/demoStorage'
+import { useNow } from '@/hooks/useNow'
 
 /** Illustrative document defaults kept under the demo's storage namespace. */
 export const SYSTEM_SETTINGS_KEY = `${STORAGE_NAMESPACE}:${STORAGE_VERSION}:system-settings`
@@ -48,7 +49,8 @@ export default function SystemPreferencesPage() {
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { ...stored, fiscalYearStartMonth: org.fiscalYearStartMonth } })
   useEffect(() => form.setValue('fiscalYearStartMonth', org.fiscalYearStartMonth), [org.fiscalYearStartMonth, form])
   const w = useWatch({ control: form.control })
-  const year = new Date().getFullYear()
+  const now = useNow()
+  const year = now.getFullYear()
   const sample = (prefix?: string) => `${prefix || '—'}-${w.includeYear ? `${year}-` : ''}${'1'.padStart(Number(w.padding) || 4, '0')}`
 
   const save = useAction(
@@ -112,7 +114,7 @@ export default function SystemPreferencesPage() {
               <Select value={prefs.dateFormat} onValueChange={(v) => prefs.set({ dateFormat: v as Preferences['dateFormat'] })}>
                 <SelectTrigger id="sp-date" className="w-full sm:w-64"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {(['dd MMM yyyy', 'yyyy-MM-dd', 'dd/MM/yyyy'] as const).map((f) => <SelectItem key={f} value={f}>{format(new Date(), f)} ({f})</SelectItem>)}
+                  {(['dd MMM yyyy', 'yyyy-MM-dd', 'dd/MM/yyyy'] as const).map((f) => <SelectItem key={f} value={f}>{format(now, f)} ({f})</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>

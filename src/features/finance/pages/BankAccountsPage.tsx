@@ -13,7 +13,8 @@ import { DataTable, type DataColumn } from '@/components/data-display/DataTable'
 import { DetailList, Money } from '@/components/data-display/DetailList'
 import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { ChartCard } from '@/components/charts/ChartCard'
-import { ChartTooltip, axisProps, currencyTick, gridProps, seriesColor } from '@/components/charts/chartKit'
+import { ChartTooltip } from '@/components/charts/chartKit'
+import { axisProps, currencyTick, gridProps, seriesColor } from '@/components/charts/chartTheme'
 import { FormDialog, RecordSheet } from '@/components/dialogs/FormDialog'
 import { NumberField, SelectField, SwitchField, TextField } from '@/components/forms/fields'
 import { SimulatedNotice } from '@/components/feedback/Feedback'
@@ -89,11 +90,14 @@ export default function BankAccountsPage() {
   const opening = sum(bankAccounts.filter((a) => a.active), (a) => a.openingBalance)
   const balanceSeries = useMemo(() => {
     const startOfWindow = `${months[0]}-01`
-    let running = add(opening, sum(payments.filter((p) => p.date < startOfWindow && bankAccounts.some((a) => a.active && a.id === p.bankAccountId)), signedPayment))
-    return flows.map((f) => {
-      running = add(running, f.net)
-      return { month: f.month, balance: running }
-    })
+    const start = add(opening, sum(payments.filter((p) => p.date < startOfWindow && bankAccounts.some((a) => a.active && a.id === p.bankAccountId)), signedPayment))
+    return flows.reduce<{ running: number; series: { month: string; balance: number }[] }>(
+      (acc, f) => {
+        const running = add(acc.running, f.net)
+        return { running, series: [...acc.series, { month: f.month, balance: running }] }
+      },
+      { running: start, series: [] },
+    ).series
   }, [flows, opening, payments, bankAccounts, months])
 
   const since = daysAgoISO(30)

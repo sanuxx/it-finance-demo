@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,21 +13,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-
-export interface ConfirmOptions {
-  title: string
-  description?: ReactNode
-  confirmLabel?: string
-  cancelLabel?: string
-  destructive?: boolean
-  /** Ask for a reason (e.g. rejection). The text is returned from `confirm`. */
-  requireReason?: boolean
-  reasonLabel?: string
-}
-
-type ConfirmFn = (options: ConfirmOptions) => Promise<{ confirmed: boolean; reason: string }>
-
-const ConfirmContext = createContext<ConfirmFn | null>(null)
+import { ConfirmContext, type ConfirmFn, type ConfirmOptions } from './useConfirm'
 
 /** Promise-based confirmation dialog: `const { confirmed, reason } = await confirm({...})`. */
 export function ConfirmProvider({ children }: { children: ReactNode }) {
@@ -81,10 +67,4 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
       </AlertDialog>
     </ConfirmContext.Provider>
   )
-}
-
-export function useConfirm(): ConfirmFn {
-  const ctx = useContext(ConfirmContext)
-  if (!ctx) throw new Error('useConfirm must be used inside <ConfirmProvider>')
-  return ctx
 }

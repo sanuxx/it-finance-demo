@@ -8,21 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
-export const FIELD_TYPE_LABELS: Record<FieldType, string> = {
-  text: 'Short text',
-  textarea: 'Multiline text',
-  number: 'Number',
-  currency: 'Currency',
-  percentage: 'Percentage',
-  date: 'Date',
-  select: 'Dropdown',
-  multiselect: 'Multi-select',
-  checkbox: 'Checkbox',
-  email: 'Email',
-  url: 'URL',
-  file: 'File attachment',
-}
-
 export interface DynamicFieldSpec {
   type: FieldType
   label: string

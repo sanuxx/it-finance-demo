@@ -15,7 +15,7 @@ import { newId } from '@/services/demo/demoStore'
 import { documentTotals, lineTotals } from '@/lib/calculations/invoices'
 import { formatCurrency } from '@/lib/formatting'
 import { todayISO } from '@/lib/dates'
-import { useProcurementOptions } from './shared'
+import { useProcurementOptions } from '../lib/useProcurementOptions'
 
 const lineSchema = z.object({
   id: z.string(),

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { FileText, Mail, Plus, Save, Send, Trash2 } from 'lucide-react'
 import type { DocumentTemplate, TemplateKind } from '@/domain'
@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { PageHeader, Section } from '@/components/layout/PageHeader'
 import { SimulatedNotice } from '@/components/feedback/Feedback'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useDb } from '@/hooks/useData'
 import { useCurrentUser, usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
@@ -19,6 +19,8 @@ import { invoiceBalance, invoiceTotals } from '@/lib/calculations/invoices'
 import { documentTotals } from '@/lib/calculations/invoices'
 import { formatCurrency, formatDate } from '@/lib/formatting'
 import { cn } from '@/lib/utils'
+import { useOnChange } from '@/hooks/useOnChange'
+import { todayISO } from '@/lib/dates'
 
 const KIND_LABELS: Record<TemplateKind, string> = {
   invoice: 'Invoice',
@@ -76,10 +78,10 @@ export default function TemplatesPage() {
   const [draft, setDraft] = useState<DocumentTemplate | null>(null)
   const bodyRef = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
+  useOnChange([selectedId, templates], () => {
     const t = templates.find((x) => x.id === selectedId)
     setDraft(t ? structuredClone(t) : null)
-  }, [selectedId, templates])
+  })
 
   // Sample values from real demo records (an open invoice and related data).
   const sample = useMemo<Record<string, string>>(() => {
@@ -94,7 +96,7 @@ export default function TemplatesPage() {
     const requester = db.employees.find((e) => e.id === pending?.employeeId)
     return {
       'organization.name': db.organization.name,
-      today: formatDate(new Date().toISOString().slice(0, 10)),
+      today: formatDate(todayISO()),
       'customer.name': customer?.name ?? '—',
       'customer.contact': customer?.contactName ?? '—',
       'customer.outstanding': formatCurrency(outstanding),

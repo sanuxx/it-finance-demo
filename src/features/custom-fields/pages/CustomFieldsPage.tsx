@@ -12,12 +12,13 @@ import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
 import { FormDialog } from '@/components/dialogs/FormDialog'
 import { SelectField, SwitchField, TextField, TextareaField } from '@/components/forms/fields'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { useAction, runWithToast } from '@/hooks/useAction'
 import { customFieldRepository } from '@/services'
-import { DynamicField, FIELD_TYPE_LABELS } from '@/features/configuration/components/DynamicField'
+import { DynamicField } from '@/features/configuration/components/DynamicField'
+import { FIELD_TYPE_LABELS } from '@/features/configuration/lib/fieldTypes'
 
 const ENTITY_LABELS: Record<CustomFieldEntity, string> = { customer: 'Customer', project: 'Project', expense: 'Expense claim', invoice: 'Invoice', supplier: 'Supplier' }
 const FIELD_TYPES = Object.keys(FIELD_TYPE_LABELS) as FieldType[]
@@ -60,15 +61,16 @@ export default function CustomFieldsPage() {
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { entity: 'project', label: '', key: '', type: 'text', optionsText: '', helpText: '', required: false, active: true } })
   const w = useWatch({ control: form.control })
 
-  useEffect(() => {
-    if (!open) return
+  const openDialog = (field?: CustomFieldDefinition) => {
+    setEditing(field)
     setPreviewValue(undefined)
     form.reset(
-      editing
-        ? { entity: editing.entity, label: editing.label, key: editing.key, type: editing.type, optionsText: (editing.options ?? []).join('\n'), helpText: editing.helpText ?? '', required: editing.required, active: editing.active }
+      field
+        ? { entity: field.entity, label: field.label, key: field.key, type: field.type, optionsText: (field.options ?? []).join('\n'), helpText: field.helpText ?? '', required: field.required, active: field.active }
         : { entity: 'project', label: '', key: '', type: 'text', optionsText: '', helpText: '', required: false, active: true },
     )
-  }, [open, editing, form])
+    setOpen(true)
+  }
 
   // Auto-suggest a key from the label for new fields.
   useEffect(() => {
@@ -117,7 +119,7 @@ export default function CustomFieldsPage() {
               <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${r.label}`}><MoreHorizontal /></Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-              <DropdownMenuItem onSelect={() => { setEditing(r); setOpen(true) }}><Pencil /> Edit</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => openDialog(r)}><Pencil /> Edit</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => runWithToast(customFieldRepository.update(r.id, { active: !r.active }), r.active ? 'Field deactivated' : 'Field activated')}><Power /> {r.active ? 'Deactivate' : 'Activate'}</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onSelect={() => remove(r)}><Trash2 /> Delete</DropdownMenuItem>
@@ -135,7 +137,7 @@ export default function CustomFieldsPage() {
         title="Custom fields"
         description="Capture extra information on core records without code."
         meta={Object.entries(ENTITY_LABELS).map(([k, label]) => <span key={k} className="text-muted-foreground rounded-full border px-2 py-0.5 text-xs">{label}: {counts[k]}</span>)}
-        actions={canEdit ? <Button onClick={() => { setEditing(undefined); setOpen(true) }}><Plus /> New custom field</Button> : null}
+        actions={canEdit ? <Button onClick={() => openDialog()}><Plus /> New custom field</Button> : null}
       />
       <SimulatedNotice className="mb-4" tone="demo">Custom field definitions are stored in this browser. The future backend will persist custom values per record and include them in APIs and exports.</SimulatedNotice>
       <DataTable
@@ -144,7 +146,7 @@ export default function CustomFieldsPage() {
         columns={columns}
         getRowId={(r) => r.id}
         exportName="custom-fields"
-        onRowClick={canEdit ? (r) => { setEditing(r); setOpen(true) } : undefined}
+        onRowClick={canEdit ? (r) => openDialog(r) : undefined}
         filters={[{ id: 'entity', label: 'Records', options: Object.entries(ENTITY_LABELS).map(([value, label]) => ({ value, label })), predicate: (r, v) => r.entity === v }]}
         emptyState={<EmptyState icon={<ListPlus />} title="No custom fields" description="Add a field to capture extra details." className="border-0" />}
       />

@@ -24,7 +24,7 @@ Last verified: see "Verification" below (commands were actually run; results rec
 | Check | Result |
 | --- | --- |
 | `npx tsc -p tsconfig.app.json --noEmit` | No errors |
-| `npm run lint` (oxlint) | 0 errors; warnings only (React Compiler advisories, fast-refresh) |
+| `npm run lint` (oxlint) | 0 errors, 0 warnings |
 | `npm test` (Vitest, 15 files) | 74 tests passed |
 | `npm run build` | Succeeds; routes are lazy-loaded chunks (largest: charts ≈ 328 kB / 95 kB gzip, app ≈ 459 kB / 139 kB gzip) |
 | `npm run test:e2e` (Playwright, Chromium, served under `/it-finance-demo/`) | 11 passed — including every sidebar route loading without errors or placeholders |
@@ -53,7 +53,6 @@ create → submit → approve, theme switching + persistence, demo reset, CSV do
 * Churn/NRR cannot reflect historical seat/price changes (not recorded).
 * Asset disposal changes status only (no gain/loss journal). VAT summary ignores credit notes and exemptions.
 * Only desktop Chromium was automated; tablet/mobile layouts were checked visually on selected pages.
-* A few React Compiler lint advisories remain (harmless `Date` use during render, manual memoisation notes).
 
 ## Backend plan
 

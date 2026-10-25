@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, CheckCircle2, CircleSlash, FlaskConical, Plus, Save, Trash2, XCircle, Zap } from 'lucide-react'
 import type { BusinessRule, RoleKey, RuleAction, RuleActionType, RuleCondition, RuleEntity, RuleField, RuleOperator } from '@/domain'
@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { PageHeader, Section } from '@/components/layout/PageHeader'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useDbSlice, useLookups, useMasterList, useProjectFinancials, useRecord } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
@@ -22,6 +22,7 @@ import { daysBetween, todayISO } from '@/lib/dates'
 import { formatCurrency } from '@/lib/formatting'
 import { cn } from '@/lib/utils'
 import { ACTION_LABELS, ENTITY_FIELDS, ENTITY_LABELS, STATUS_OPTIONS, describeValue } from '../lib/ruleLabels'
+import { useOnChange } from '@/hooks/useOnChange'
 
 type Draft = Omit<BusinessRule, 'id' | 'createdAt' | 'updatedAt'>
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 8)}`
@@ -52,7 +53,7 @@ export default function RuleEditorPage() {
   const [sample, setSample] = useState<RuleContext>({ amount: 65_000, categoryId: 'exp-travel', projectId: 'prj-103', status: 'submitted', billable: true, budgetConsumptionPercent: 72, daysUntilDue: 3 })
   const [dirty, setDirty] = useState(false)
 
-  useEffect(() => {
+  useOnChange([stored], () => {
     if (stored) {
       const { id: _i, createdAt: _c, updatedAt: _u, ...rest } = structuredClone(stored)
       void _i
@@ -61,7 +62,7 @@ export default function RuleEditorPage() {
       setDraft(rest)
       setDirty(false)
     }
-  }, [stored])
+  })
 
   const evaluation = useMemo(() => (draft ? evaluateRule({ ...draft, id: 'test', createdAt: '', updatedAt: '' }, sample) : null), [draft, sample])
 

@@ -11,7 +11,8 @@ import { exportCsv, timestampedName } from '@/lib/export'
 import { DATE_PRESET_LABELS, presetRange, todayISO, type DatePreset } from '@/lib/dates'
 import { formatDate } from '@/lib/formatting'
 import { REPORT_BY_KEY } from '../registry'
-import { ReportResultView, reportExportColumns } from '../components/ReportResultView'
+import { ReportResultView } from '../components/ReportResultView'
+import { reportExportColumns } from '../lib/reportFormat'
 
 export default function ReportViewerPage() {
   const { reportKey = '' } = useParams()

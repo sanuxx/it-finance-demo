@@ -13,7 +13,7 @@ import { add, applyRate } from '@/lib/calculations/money'
 import { documentTotals } from '@/lib/calculations/invoices'
 import { formatCurrency } from '@/lib/formatting'
 import { todayISO } from '@/lib/dates'
-import { useProcurementOptions } from './shared'
+import { useProcurementOptions } from '../lib/useProcurementOptions'
 
 const schema = z
   .object({

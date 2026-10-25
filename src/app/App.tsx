@@ -60,7 +60,7 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route index element={<HomeRedirect />} />
               {ROUTES.map((r) => (
-                <Route key={r.path} path={r.path} element={r.element} />
+                <Route key={r.path} path={r.path} element={<r.component />} />
               ))}
               <Route path="*" element={<NotFoundPage />} />
             </Route>

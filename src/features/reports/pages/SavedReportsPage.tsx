@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { PageHeader } from '@/components/layout/PageHeader'
 import { DataTable, type DataColumn } from '@/components/data-display/DataTable'
 import { EmptyState } from '@/components/feedback/Feedback'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection } from '@/hooks/useData'
 import { useCurrentUser, usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'

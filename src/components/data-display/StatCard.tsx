@@ -26,7 +26,7 @@ export interface StatCardProps {
 export function StatCard({ label, value, term, hint, delta, invertDelta, deltaLabel = 'vs previous period', icon, to, estimate, className }: StatCardProps) {
   const good = delta === null || delta === undefined ? null : invertDelta ? delta < 0 : delta > 0
   const content = (
-    <Card className={cn('gap-2 p-4 h-full transition-colors', to && 'hover:border-primary/40 hover:bg-accent/30', className)}>
+    <Card className={cn('gap-2 p-5 h-full transition-all', to && 'hover:-translate-y-0.5 hover:shadow-md', className)}>
       <div className="flex items-start justify-between gap-2">
         <div className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
           <Term term={term ?? label}>{label}</Term>

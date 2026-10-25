@@ -77,6 +77,7 @@ export function TextField<T extends FieldValues>({ control, name, label, descrip
 export function NumberField<T extends FieldValues>({ control, name, label, description, required, className, disabled, step = 'any', min, prefix, suffix, placeholder }: BaseProps<T> & { step?: number | 'any'; min?: number; prefix?: string; suffix?: string; placeholder?: string }) {
   const id = useId()
   const { field, fieldState } = useController({ control, name })
+  const { value, onChange, onBlur, name: fieldName, ref: fieldRef } = field
   return (
     <Field id={id} label={label} description={description} error={fieldState.error?.message} required={required} className={className}>
       <div className="relative">
@@ -92,11 +93,11 @@ export function NumberField<T extends FieldValues>({ control, name, label, descr
           className={cn('tabular', prefix && 'pl-11', suffix && 'pr-9')}
           aria-invalid={!!fieldState.error}
           aria-describedby={fieldState.error ? `${id}-error` : undefined}
-          name={field.name}
-          ref={field.ref}
-          onBlur={field.onBlur}
-          value={field.value === undefined || field.value === null || Number.isNaN(field.value) ? '' : String(field.value)}
-          onChange={(e) => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+          name={fieldName}
+          ref={fieldRef}
+          onBlur={onBlur}
+          value={value === undefined || value === null || Number.isNaN(value) ? '' : String(value)}
+          onChange={(e) => onChange(e.target.value === '' ? undefined : Number(e.target.value))}
         />
         {suffix ? <span className="text-muted-foreground pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs">{suffix}</span> : null}
       </div>

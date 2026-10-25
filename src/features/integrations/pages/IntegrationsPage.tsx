@@ -10,12 +10,13 @@ import { StatCard } from '@/components/data-display/StatCard'
 import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { SimulatedNotice } from '@/components/feedback/Feedback'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
 import { integrationRepository } from '@/services'
 import { formatDateTime, formatRelative, humanize } from '@/lib/formatting'
+import { nowISO } from '@/lib/dates'
 
 const CATEGORY_ICON: Record<IntegrationSetting['category'], React.ReactNode> = {
   accounting: <Landmark />,
@@ -42,7 +43,7 @@ function SettingsDialog({ integration, onClose }: { integration?: IntegrationSet
     const ok = await runWithToast(
       integrationRepository.update(integration.id, {
         settings: values,
-        ...(connecting ? { status: 'connected_demo' as const, lastSyncAt: new Date().toISOString() } : {}),
+        ...(connecting ? { status: 'connected_demo' as const, lastSyncAt: nowISO() } : {}),
       }),
       connecting ? `${integration.name} connected (simulated)` : 'Settings saved',
     )
@@ -106,7 +107,7 @@ export default function IntegrationsPage() {
     [integrations],
   )
 
-  const sync = (i: IntegrationSetting) => runWithToast(integrationRepository.update(i.id, { lastSyncAt: new Date().toISOString() }), `${i.name}: simulated sync complete — no data was fetched`)
+  const sync = (i: IntegrationSetting) => runWithToast(integrationRepository.update(i.id, { lastSyncAt: nowISO() }), `${i.name}: simulated sync complete — no data was fetched`)
 
   const disconnect = async (i: IntegrationSetting) => {
     const { confirmed } = await confirm({ title: `Disconnect ${i.name}?`, description: 'This only changes the simulated status in this browser. Existing demo records are kept.', confirmLabel: 'Disconnect' })

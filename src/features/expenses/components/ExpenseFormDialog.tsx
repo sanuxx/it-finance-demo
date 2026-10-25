@@ -15,6 +15,7 @@ import { expenseRepository } from '@/services'
 import { newId } from '@/services/demo/demoStore'
 import { todayISO } from '@/lib/dates'
 import { useMyEmployeeId } from '../lib/useExpenseHelpers'
+import { useOnChange } from '@/hooks/useOnChange'
 
 const schema = z.object({
   employeeId: z.string().min(1, 'Choose who is claiming'),
@@ -58,9 +59,13 @@ export function ExpenseFormDialog({ open, onOpenChange, claim, onSaved }: { open
         ? { employeeId: claim.employeeId, date: claim.date, categoryId: claim.categoryId, description: claim.description, amount: claim.amount, projectId: claim.projectId, departmentId: claim.departmentId, billable: claim.billable }
         : { employeeId: defaultEmp, date: todayISO(), categoryId: '', description: '', amount: undefined as unknown as number, projectId: undefined, departmentId: employees.find((e) => e.id === defaultEmp)?.departmentId ?? '', billable: false },
     )
+  }, [open, claim, form, mine, employees])
+
+  useOnChange([open, claim], () => {
+    if (!open) return
     setReceipts(claim?.receipts ?? [])
     setFileError('')
-  }, [open, claim, form, mine, employees])
+  })
 
   // Default the department from the claimant.
   useEffect(() => {

@@ -8,7 +8,8 @@ import { DataTable, type DataColumn } from '@/components/data-display/DataTable'
 import { Money } from '@/components/data-display/DetailList'
 import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { ChartCard } from '@/components/charts/ChartCard'
-import { ChartLegend, ChartTooltip, axisProps, currencyTick, foldOther, gridProps, seriesColor } from '@/components/charts/chartKit'
+import { ChartLegend, ChartTooltip } from '@/components/charts/chartKit'
+import { axisProps, currencyTick, foldOther, gridProps, seriesColor } from '@/components/charts/chartTheme'
 import { DateRangeSelect } from '@/components/forms/DateRangeSelect'
 import { SimulatedNotice } from '@/components/feedback/Feedback'
 import { useLedgers, useLookups } from '@/hooks/useData'
@@ -38,22 +39,17 @@ export default function RevenuePage() {
   const byCustomer = groupSum(revenue, (r) => r.customerId)
   const categoryKeys = byCategory.map((c) => c.key)
 
-  const months = useMemo(() => {
-    const from = range.from ?? revenue.reduce((m, r) => (r.date < m ? r.date : m), todayISO())
-    const to = range.to && range.to < todayISO() ? range.to : todayISO()
-    return monthsBetween(from, to)
-  }, [range, revenue])
+  // Cheap to compute (≈12 months × a few hundred ledger rows), so no manual memoisation.
+  const today = todayISO()
+  const firstDate = range.from ?? revenue.reduce((m, r) => (r.date < m ? r.date : m), today)
+  const months = monthsBetween(firstDate, range.to && range.to < today ? range.to : today)
 
-  const monthly = useMemo(
-    () =>
-      months.map((m) => {
-        const row: Record<string, number | string> = { month: m }
-        for (const k of categoryKeys) row[k] = sum(revenue.filter((r) => r.date.startsWith(m) && r.categoryId === k), (r) => r.amount)
-        row.total = sum(revenue.filter((r) => r.date.startsWith(m)), (r) => r.amount)
-        return row
-      }),
-    [months, revenue, categoryKeys],
-  )
+  const monthly = months.map((m) => {
+    const row: Record<string, number | string> = { month: m }
+    for (const k of categoryKeys) row[k] = sum(revenue.filter((r) => r.date.startsWith(m) && r.categoryId === k), (r) => r.amount)
+    row.total = sum(revenue.filter((r) => r.date.startsWith(m)), (r) => r.amount)
+    return row
+  })
 
   const customerPie = foldOther(
     byCustomer.filter((c) => c.amount > 0).map((c) => ({ name: lookups.customer(c.key), value: c.amount })),

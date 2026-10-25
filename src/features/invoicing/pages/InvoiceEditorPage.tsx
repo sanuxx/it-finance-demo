@@ -16,7 +16,8 @@ import { runWithToast } from '@/hooks/useAction'
 import { invoiceRepository } from '@/services'
 import { documentTotals } from '@/lib/calculations/invoices'
 import { addDaysIso, blankLine, todayIso } from '../lib/billing'
-import { LineItemsEditor, linesSchema, type LinesForm } from '../components/LineItemsEditor'
+import { LineItemsEditor } from '../components/LineItemsEditor'
+import { linesSchema, type LinesForm } from '../lib/lineSchema'
 
 const schema = z
   .object({

@@ -24,6 +24,7 @@ import { searchAll } from '@/lib/search'
 import { formatRelative } from '@/lib/formatting'
 import { cn } from '@/lib/utils'
 import { SidebarContent } from './Sidebar'
+import { useOnChange } from '@/hooks/useOnChange'
 
 function Breadcrumbs() {
   const { pathname } = useLocation()
@@ -274,9 +275,9 @@ function OrganizationContext() {
 export function Topbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { pathname } = useLocation()
-  useEffect(() => setMobileOpen(false), [pathname])
+  useOnChange([pathname], () => setMobileOpen(false))
   return (
-    <header className="bg-background/95 no-print sticky top-0 z-30 flex h-14 items-center gap-2 border-b px-3 backdrop-blur sm:px-5">
+    <header className="bg-background/80 no-print sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border/60 px-3 backdrop-blur-md sm:px-5">
       <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
         <Menu />
       </Button>

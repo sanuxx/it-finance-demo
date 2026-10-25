@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -41,16 +41,18 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PageHeader, Section } from '@/components/layout/PageHeader'
 import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection, useRecord } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
 import { formRepository, formSubmissionRepository } from '@/services'
 import { formatDateTime } from '@/lib/formatting'
 import { cn } from '@/lib/utils'
-import { DynamicField, FIELD_TYPE_LABELS } from '../components/DynamicField'
+import { DynamicField } from '../components/DynamicField'
+import { FIELD_TYPE_LABELS } from '../lib/fieldTypes'
 import { FormRenderer } from '../components/FormRenderer'
 import { visibleValues } from '../lib/formSchema'
+import { useOnChange } from '@/hooks/useOnChange'
 
 const PALETTE: { type: FieldType; icon: React.ComponentType<{ className?: string }> }[] = [
   { type: 'text', icon: Type },
@@ -128,12 +130,12 @@ export default function FormBuilderPage() {
   const [mode, setMode] = useState<'design' | 'preview'>('design')
   const [dirty, setDirty] = useState(false)
 
-  useEffect(() => {
+  useOnChange([stored], () => {
     if (stored && (!draft || draft.id !== stored.id)) {
       setDraft(structuredClone(stored))
       setDirty(false)
     }
-  }, [stored]) // eslint-disable-line react-hooks/exhaustive-deps
+  })
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }))
   const formSubs = useMemo(() => submissions.filter((s) => s.formId === draft?.id).slice(0, 8), [submissions, draft?.id])

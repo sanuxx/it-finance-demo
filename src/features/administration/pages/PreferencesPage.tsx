@@ -7,9 +7,10 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { PageHeader, Section } from '@/components/layout/PageHeader'
 import { DateRangeSelect } from '@/components/forms/DateRangeSelect'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { ROLE_LABELS, usePreferences, type Preferences, type ThemePreference } from '@/app/state/preferences'
 import { useCurrentUser } from '@/hooks/useSession'
+import { useNow } from '@/hooks/useNow'
 
 function Row({ id, label, description, children }: { id: string; label: string; description?: string; children: React.ReactNode }) {
   return (
@@ -24,6 +25,7 @@ function Row({ id, label, description, children }: { id: string; label: string; 
 }
 
 export default function PreferencesPage() {
+  const now = useNow()
   const prefs = usePreferences()
   const user = useCurrentUser()
   const confirm = useConfirm()
@@ -61,7 +63,7 @@ export default function PreferencesPage() {
           <Row id="p-date" label="Date format">
             <Select value={prefs.dateFormat} onValueChange={(v) => prefs.set({ dateFormat: v as Preferences['dateFormat'] })}>
               <SelectTrigger id="p-date" className="w-56"><SelectValue /></SelectTrigger>
-              <SelectContent>{(['dd MMM yyyy', 'yyyy-MM-dd', 'dd/MM/yyyy'] as const).map((f) => <SelectItem key={f} value={f}>{format(new Date(), f)}</SelectItem>)}</SelectContent>
+              <SelectContent>{(['dd MMM yyyy', 'yyyy-MM-dd', 'dd/MM/yyyy'] as const).map((f) => <SelectItem key={f} value={f}>{format(now, f)}</SelectItem>)}</SelectContent>
             </Select>
           </Row>
           <Row id="p-preset" label="Default dashboard period">

@@ -3,30 +3,14 @@ import { CheckCircle2, XCircle } from 'lucide-react'
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Card } from '@/components/ui/card'
 import { ChartCard } from '@/components/charts/ChartCard'
-import { ChartLegend, ChartTooltip, axisProps, currencyTick, gridProps, seriesColor } from '@/components/charts/chartKit'
-import { formatCurrency, formatDate, formatMonth, formatNumber, formatPercent, humanize } from '@/lib/formatting'
+import { ChartLegend, ChartTooltip } from '@/components/charts/chartKit'
+import { axisProps, currencyTick, gridProps, seriesColor } from '@/components/charts/chartTheme'
+import { formatCurrency } from '@/lib/formatting'
 import { monthLabel } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { CategoryDonut } from '@/features/dashboard/widgets/charts'
 import type { CellFormat, ReportChart, ReportColumn, ReportResult, ReportRow } from '../registry'
-
-export function formatCell(value: unknown, format: CellFormat = 'text'): string {
-  if (value === null || value === undefined || value === '') return '—'
-  switch (format) {
-    case 'currency':
-      return formatCurrency(Number(value))
-    case 'percent':
-      return formatPercent(Number(value))
-    case 'number':
-      return formatNumber(Number(value))
-    case 'date':
-      return formatDate(String(value))
-    case 'month':
-      return /^\d{4}-\d{2}/.test(String(value)) ? formatMonth(String(value)) : String(value)
-    default:
-      return typeof value === 'string' && /^[a-z]+(_[a-z]+)*$/.test(value) ? humanize(value) : String(value)
-  }
-}
+import { formatCell } from '../lib/reportFormat'
 
 const numericFormats: CellFormat[] = ['currency', 'percent', 'number']
 
@@ -166,7 +150,3 @@ export function ReportResultView({ result, title, showChart = true }: { result: 
   )
 }
 
-/** Flatten a report result for CSV export. */
-export function reportExportColumns(result: ReportResult) {
-  return result.columns.map((c) => ({ header: c.header, value: (r: ReportRow) => (r[c.key] ?? '') as string | number }))
-}

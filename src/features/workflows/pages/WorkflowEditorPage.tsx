@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -14,7 +14,7 @@ import { PageHeader, Section } from '@/components/layout/PageHeader'
 import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { DataTable, type DataColumn } from '@/components/data-display/DataTable'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection, useMasterList, useRecord } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils'
 import { conditionHolds, describeCondition, simulateWorkflow, type StageDecision } from '../lib/simulate'
 import { WORKFLOW_ENTITY_LABELS } from '../lib/templates'
 import type { WorkflowRun } from '@/domain'
+import { useOnChange } from '@/hooks/useOnChange'
 
 type Draft = Omit<WorkflowDefinition, 'id' | 'createdAt' | 'updatedAt'>
 const uid = () => `st-${Math.random().toString(36).slice(2, 8)}`
@@ -134,7 +135,7 @@ export default function WorkflowEditorPage() {
   const [decisions, setDecisions] = useState<Record<string, StageDecision>>({})
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }))
 
-  useEffect(() => {
+  useOnChange([stored], () => {
     if (stored) {
       const { id: _i, createdAt: _c, updatedAt: _u, ...rest } = structuredClone(stored)
       void _i
@@ -143,7 +144,7 @@ export default function WorkflowEditorPage() {
       setDraft(rest)
       setDirty(false)
     }
-  }, [stored])
+  })
 
   const preview = useMemo(() => (draft ? simulateWorkflow(draft, sample, decisions) : null), [draft, sample, decisions])
   const runs = useMemo(() => (stored ? allRuns.filter((r) => r.workflowId === stored.id) : []), [allRuns, stored])

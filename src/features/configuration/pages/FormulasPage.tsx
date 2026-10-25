@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { CheckCircle2, Copy, Plus, Save, Sigma, Trash2, XCircle } from 'lucide-react'
 import type { FormulaDefinition, FormulaVariable } from '@/domain'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { PageHeader, Section } from '@/components/layout/PageHeader'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
@@ -16,6 +16,7 @@ import { formulaRepository } from '@/services'
 import { formatCurrency, formatNumber, formatPercent } from '@/lib/formatting'
 import { cn } from '@/lib/utils'
 import { FORMULA_FUNCTIONS, evaluateFormula } from '../lib/formula'
+import { useOnChange } from '@/hooks/useOnChange'
 
 type Draft = Omit<FormulaDefinition, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }
 
@@ -35,11 +36,11 @@ export default function FormulasPage() {
   const [draft, setDraft] = useState<Draft | null>(null)
   const exprRef = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
+  useOnChange([selectedId, formulas], () => {
     if (selectedId === 'new') return
     const f = formulas.find((x) => x.id === selectedId)
     setDraft(f ? structuredClone(f) : null)
-  }, [selectedId, formulas])
+  })
 
   const vars = useMemo(() => Object.fromEntries((draft?.variables ?? []).filter((v) => v.key).map((v) => [v.key, Number(v.sampleValue)])), [draft?.variables])
   const result = useMemo(() => (draft ? evaluateFormula(draft.expression, vars) : null), [draft, vars])

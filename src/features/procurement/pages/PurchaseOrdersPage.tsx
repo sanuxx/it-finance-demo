@@ -7,10 +7,11 @@ import { PageHeader, StatGrid } from '@/components/layout/PageHeader'
 import { DataTable, type DataColumn } from '@/components/data-display/DataTable'
 import { StatCard } from '@/components/data-display/StatCard'
 import { ActivityTimeline, DetailList, Money } from '@/components/data-display/DetailList'
-import { StatusBadge, statusLabel } from '@/components/data-display/StatusBadge'
+import { StatusBadge } from '@/components/data-display/StatusBadge'
+import { statusLabel } from '@/components/data-display/statusMeta'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
 import { RecordSheet } from '@/components/dialogs/FormDialog'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection, useLookups } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'
@@ -20,6 +21,7 @@ import { add } from '@/lib/calculations/money'
 import { formatCurrency, formatDate } from '@/lib/formatting'
 import { PurchaseOrderFormDialog } from '../components/PurchaseOrderFormDialog'
 import { RowActions, type RowAction } from '../components/shared'
+import { useNow } from '@/hooks/useNow'
 
 type Row = PurchaseOrder & { total: number; net: number; billed: number }
 
@@ -34,6 +36,7 @@ const TRANSITION_LABEL: Record<PurchaseOrderStatus, { label: string; icon: React
 }
 
 export default function PurchaseOrdersPage() {
+  const now = useNow()
   const orders = useCollection('purchaseOrders')
   const bills = useCollection('supplierBills')
   const requests = useCollection('purchaseRequests')
@@ -125,7 +128,7 @@ export default function PurchaseOrdersPage() {
         <StatCard label="Open commitments" term="Committed cost" value={formatCurrency(open.reduce((s, r) => add(s, Math.max(0, r.net - r.billed)), 0))} hint={`${open.length} approved or sent orders, net of billed`} />
         <StatCard label="Pending approval" value={rows.filter((r) => r.status === 'pending_approval').length} to="/approvals" />
         <StatCard label="Drafts" value={rows.filter((r) => r.status === 'draft').length} />
-        <StatCard label="Received this month" value={rows.filter((r) => r.status === 'received' && r.updatedAt.slice(0, 7) === new Date().toISOString().slice(0, 7)).length} />
+        <StatCard label="Received this month" value={rows.filter((r) => r.status === 'received' && r.updatedAt.slice(0, 7) === now.toISOString().slice(0, 7)).length} />
       </StatGrid>
       <DataTable
         caption="Purchase orders"

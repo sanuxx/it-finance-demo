@@ -7,7 +7,7 @@ import { FormDialog } from '@/components/dialogs/FormDialog'
 import { CheckboxField, NumberField, SelectField, TextField } from '@/components/forms/fields'
 import { useAction } from '@/hooks/useAction'
 import { supplierRepository } from '@/services'
-import { useProcurementOptions } from './shared'
+import { useProcurementOptions } from '../lib/useProcurementOptions'
 
 const schema = z.object({
   name: z.string().trim().min(2, 'Enter the supplier name').max(120),

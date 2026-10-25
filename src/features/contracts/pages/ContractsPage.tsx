@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { FileSignature, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
@@ -11,11 +11,12 @@ import { PageHeader, StatGrid } from '@/components/layout/PageHeader'
 import { DataTable, type DataColumn } from '@/components/data-display/DataTable'
 import { StatCard } from '@/components/data-display/StatCard'
 import { Money, ProgressBar } from '@/components/data-display/DetailList'
-import { StatusBadge, statusLabel } from '@/components/data-display/StatusBadge'
+import { StatusBadge } from '@/components/data-display/StatusBadge'
+import { statusLabel } from '@/components/data-display/statusMeta'
 import { EmptyState } from '@/components/feedback/Feedback'
 import { FormDialog } from '@/components/dialogs/FormDialog'
 import { NumberField, SelectField, TextField, TextareaField } from '@/components/forms/fields'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection, useDbSlice, useLookups } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast, useAction } from '@/hooks/useAction'
@@ -25,6 +26,7 @@ import { add, percentOf } from '@/lib/calculations/money'
 import { addMonths, format } from 'date-fns'
 import { formatCurrency, formatDate } from '@/lib/formatting'
 import { contractInvoiced } from '../lib/recognition'
+import { useNow } from '@/hooks/useNow'
 
 const BILLING = [
   { value: 'fixed_price', label: 'Fixed price' },
@@ -65,7 +67,7 @@ function ContractDialog({ open, onOpenChange, contract }: { open: boolean; onOpe
         : { title: '', customerId: '', projectId: undefined, billingModel: 'fixed_price', value: undefined as unknown as number, startDate: start, endDate: format(addMonths(new Date(), 12), 'yyyy-MM-dd'), renewalDate: '', status: 'draft', description: '' },
     )
   }, [open, contract, form])
-  const customerId = form.watch('customerId')
+  const customerId = useWatch({ control: form.control, name: 'customerId' })
   const save = useAction(
     (v: Values) => {
       const payload = { ...v, projectId: v.projectId || undefined, renewalDate: v.renewalDate || undefined, currency: 'LKR' as const }
@@ -98,6 +100,7 @@ function ContractDialog({ open, onOpenChange, contract }: { open: boolean; onOpe
 type Row = Contract & { invoiced: number; invoicedPct: number | null }
 
 export default function ContractsPage() {
+  const now = useNow()
   const contracts = useCollection('contracts')
   const db = useDbSlice('invoices', 'creditNotes')
   const lookups = useLookups()
@@ -114,9 +117,9 @@ export default function ContractsPage() {
     const active = rows.filter((r) => r.status === 'active')
     const value = active.reduce((s, r) => add(s, r.value), 0)
     const invoiced = active.reduce((s, r) => add(s, r.invoiced), 0)
-    const soon = rows.filter((r) => r.status === 'active' && r.renewalDate && r.renewalDate <= format(addMonths(new Date(), 3), 'yyyy-MM-dd')).length
+    const soon = rows.filter((r) => r.status === 'active' && r.renewalDate && r.renewalDate <= format(addMonths(now, 3), 'yyyy-MM-dd')).length
     return { active: active.length, value, remaining: Math.max(0, value - invoiced), soon }
-  }, [rows])
+  }, [rows, now])
 
   const remove = async (c: Contract) => {
     const { confirmed } = await confirm({ title: `Delete ${c.number}?`, description: 'Contracts referenced by invoices cannot be deleted — terminate them instead.', destructive: true, confirmLabel: 'Delete contract' })

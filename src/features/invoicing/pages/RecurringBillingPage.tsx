@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { MoreHorizontal, Pause, Pencil, Play, Plus, Repeat, Trash2, Zap } from 'lucide-react'
@@ -15,7 +15,7 @@ import { StatusBadge } from '@/components/data-display/StatusBadge'
 import { EmptyState, SimulatedNotice } from '@/components/feedback/Feedback'
 import { FormDialog } from '@/components/dialogs/FormDialog'
 import { NumberField, SelectField, SwitchField, TextField } from '@/components/forms/fields'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection, useLookups } from '@/hooks/useData'
 import { usePermission } from '@/hooks/useSession'
 import { runWithToast, useAction } from '@/hooks/useAction'
@@ -51,7 +51,7 @@ function ScheduleDialog({ open, onOpenChange, schedule }: { open: boolean; onOpe
     const today = todayIso()
     form.reset(schedule ? { ...schedule, endDate: schedule.endDate ?? '' } : { name: '', customerId: '', contractId: undefined, frequency: 'monthly', amount: undefined as unknown as number, taxRatePercent: 18, description: '', startDate: today, nextRunDate: today, endDate: '', active: true })
   }, [open, schedule, form])
-  const customerId = form.watch('customerId')
+  const customerId = useWatch({ control: form.control, name: 'customerId' })
   const save = useAction(
     (v: Values) => {
       const payload = { ...v, endDate: v.endDate || undefined, contractId: v.contractId || undefined }

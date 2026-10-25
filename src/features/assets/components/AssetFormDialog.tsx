@@ -12,7 +12,7 @@ import { nextNumber } from '@/services/demo/demoStore'
 import { divide, subtract } from '@/lib/calculations/money'
 import { formatCurrency } from '@/lib/formatting'
 import { todayISO } from '@/lib/dates'
-import { useProcurementOptions } from '@/features/procurement/components/shared'
+import { useProcurementOptions } from '@/features/procurement/lib/useProcurementOptions'
 
 const schema = z
   .object({

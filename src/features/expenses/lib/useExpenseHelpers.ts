@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { ExpenseClaim } from '@/domain'
-import { useConfirm } from '@/components/dialogs/ConfirmDialog'
+import { useConfirm } from '@/components/dialogs/useConfirm'
 import { useCollection } from '@/hooks/useData'
 import { useCurrentUser, usePermission } from '@/hooks/useSession'
 import { runWithToast } from '@/hooks/useAction'

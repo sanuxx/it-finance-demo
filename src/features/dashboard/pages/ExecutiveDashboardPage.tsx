@@ -11,14 +11,16 @@ import { DATE_PRESET_LABELS } from '@/lib/dates'
 import { defaultDashboard } from '@/data/seed'
 import { DashboardWidget } from '../widgets/DashboardWidget'
 import { useDashboardMetrics } from '../hooks/useDashboardMetrics'
+import { useNow } from '@/hooks/useNow'
 
 export default function ExecutiveDashboardPage() {
+  const now = useNow()
   const preset = usePreferences((s) => s.dashboardPreset)
   const set = usePreferences((s) => s.set)
   const dashboards = useCollection('dashboards')
   const user = useCurrentUser()
   const canConfigure = usePermission('config.edit')
-  const config = dashboards.find((d) => d.id === 'dash-executive') ?? defaultDashboard(new Date().toISOString())
+  const config = dashboards.find((d) => d.id === 'dash-executive') ?? defaultDashboard(now.toISOString())
   const metrics = useDashboardMetrics(preset)
 
   return (
