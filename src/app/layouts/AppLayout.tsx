@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { Lock, TriangleAlert, X } from 'lucide-react'
+import { Lock, TriangleAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -73,23 +73,14 @@ function StorageBanner() {
   )
 }
 
-function DemoBanner() {
-  const show = usePreferences((s) => s.showDemoBanner)
-  const set = usePreferences((s) => s.set)
-  if (!show) return null
+function DemoFooter() {
   return (
-    <div className="bg-muted/60 text-muted-foreground no-print flex items-center gap-2 border-b px-5 py-1.5 text-xs">
-      <span className="flex-1">
-        <strong className="text-foreground font-medium">Interactive demo with fictional sample data.</strong> Everything you do is stored only in this browser — no real payments, emails,
-        accounting postings or approvals happen.{' '}
-        <Link to="/admin/demo-data" className="text-primary underline-offset-2 hover:underline">
-          Manage demo data
-        </Link>
-      </span>
-      <button type="button" onClick={() => set({ showDemoBanner: false })} aria-label="Dismiss demo notice" className="hover:text-foreground rounded-sm p-0.5">
-        <X className="size-3.5" />
-      </button>
-    </div>
+    <footer className="text-muted-foreground no-print mx-auto w-full max-w-[1600px] px-4 pt-2 pb-8 text-xs sm:px-6 lg:px-8">
+      Interactive demo · all data is fictional and stored only in this browser — nothing is real money, email or accounting.{' '}
+      <Link to="/admin/demo-data" className="text-primary underline-offset-2 hover:underline">
+        Manage demo data
+      </Link>
+    </footer>
   )
 }
 
@@ -119,7 +110,6 @@ export function AppLayout() {
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
         <StorageBanner />
-        <DemoBanner />
         <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8">
           <ErrorBoundary key={pathname}>
             <Suspense fallback={<PageSkeleton />}>
@@ -129,6 +119,7 @@ export function AppLayout() {
             </Suspense>
           </ErrorBoundary>
         </main>
+        <DemoFooter />
       </div>
     </div>
   )

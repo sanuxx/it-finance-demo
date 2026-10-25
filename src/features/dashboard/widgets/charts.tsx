@@ -49,8 +49,8 @@ export function IncomeExpenseChart({ data, title = 'Income vs expenses', descrip
               <XAxis dataKey="month" tickFormatter={monthLabel} {...axisProps} />
               <YAxis tickFormatter={currencyTick} width={56} {...axisProps} />
               <Tooltip content={<ChartTooltip labelFormatter={(l) => formatMonth(String(l))} />} cursor={{ fill: 'var(--muted)', opacity: 0.5 }} />
-              <Bar dataKey="revenue" name="Revenue" fill={seriesColor(0)} radius={[4, 4, 0, 0]} maxBarSize={28} />
-              <Bar dataKey="expenses" name="Expenses" fill={seriesColor(1)} radius={[4, 4, 0, 0]} maxBarSize={28} />
+              <Bar dataKey="revenue" name="Revenue" fill={seriesColor(0)} radius={[8, 8, 0, 0]} maxBarSize={18} />
+              <Bar dataKey="expenses" name="Expenses" fill={seriesColor(1)} radius={[8, 8, 0, 0]} maxBarSize={18} />
               <Line dataKey="profit" name="Net profit" stroke="var(--foreground)" strokeWidth={2} dot={{ r: 3 }} type="monotone" />
             </ComposedChart>
           </ResponsiveContainer>

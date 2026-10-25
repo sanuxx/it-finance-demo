@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowDownRight, ArrowUpRight, ChevronRight, Minus } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Term } from './Term'
 import { cn } from '@/lib/utils'
@@ -26,15 +26,15 @@ export interface StatCardProps {
 export function StatCard({ label, value, term, hint, delta, invertDelta, deltaLabel = 'vs previous period', icon, to, estimate, className }: StatCardProps) {
   const good = delta === null || delta === undefined ? null : invertDelta ? delta < 0 : delta > 0
   const content = (
-    <Card className={cn('gap-2 p-5 h-full transition-all', to && 'hover:-translate-y-0.5 hover:shadow-md', className)}>
+    <Card className={cn('gap-3 p-5 h-full transition-all', to && 'hover:-translate-y-0.5 hover:shadow-md', className)}>
       <div className="flex items-start justify-between gap-2">
-        <div className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+        <div className="text-muted-foreground text-[13px] font-medium">
           <Term term={term ?? label}>{label}</Term>
         </div>
         {icon ? <div className="text-muted-foreground [&_svg]:size-4">{icon}</div> : null}
       </div>
-      <div className="tabular text-2xl font-semibold tracking-tight">
-        {value}
+      <div className="tabular text-2xl leading-none font-semibold tracking-tight">
+        {typeof value === 'string' ? value.replace(/(\d)\.\d{2}(?!\d)/g, '$1') : value}
         {estimate ? (
           <span className="text-muted-foreground ml-2 align-middle text-[10px] font-medium tracking-wide uppercase">est.</span>
         ) : null}
@@ -48,7 +48,6 @@ export function StatCard({ label, value, term, hint, delta, invertDelta, deltaLa
         ) : (
           <span className="text-muted-foreground">{hint}</span>
         )}
-        {to ? <ChevronRight className="text-muted-foreground size-3.5 shrink-0" aria-hidden /> : null}
       </div>
       {delta !== undefined && delta !== null && hint ? <div className="text-muted-foreground -mt-1 text-xs">{hint}</div> : null}
     </Card>

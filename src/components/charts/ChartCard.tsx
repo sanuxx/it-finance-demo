@@ -35,7 +35,7 @@ export function ChartCard<R>({
 }) {
   const [asTable, setAsTable] = useState(false)
   return (
-    <section className={cn('bg-card text-card-foreground flex flex-col rounded-2xl border border-border/70 shadow-sm', className)}>
+    <section className={cn('bg-card text-card-foreground flex flex-col rounded-2xl shadow-sm ring-1 ring-foreground/[0.06]', className)}>
       <div className="flex items-start justify-between gap-2 px-6 pt-5">
         <div>
           <h2 className="text-sm font-semibold">{title}</h2>

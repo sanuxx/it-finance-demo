@@ -93,6 +93,9 @@ export interface DataTableProps<T> {
   dense?: boolean
 }
 
+/** Columns holding short, atomic values (dates, status, codes) stay on one line; text columns may wrap. */
+const NOWRAP_COLUMN = /date|due|issued|issue|period|renew|start|end|month|status|number|code|invoice|claim|ref|project$|^id$/i
+
 const features = tableFeatures({
   rowSortingFeature,
   columnVisibilityFeature,
@@ -268,8 +271,8 @@ export function DataTable<T extends RowData>({
           {toolbar}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9">
-                <Columns3 /> <span className="hidden sm:inline">Columns</span>
+              <Button variant="outline" size="sm" className="h-9" aria-label="Columns" title="Columns">
+                <Columns3 /> <span className="hidden xl:inline">Columns</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52">
@@ -286,8 +289,8 @@ export function DataTable<T extends RowData>({
             </DropdownMenuContent>
           </DropdownMenu>
           {exportName ? (
-            <Button variant="outline" size="sm" className="h-9" onClick={doExport} disabled={!total}>
-              <Download /> <span className="hidden sm:inline">Export CSV</span>
+            <Button variant="outline" size="sm" className="h-9" onClick={doExport} disabled={!total} aria-label="Export CSV" title="Export CSV">
+              <Download /> <span className="hidden xl:inline">Export CSV</span>
             </Button>
           ) : null}
         </div>
@@ -317,10 +320,10 @@ export function DataTable<T extends RowData>({
         </div>
       ) : null}
 
-      <div className="bg-card overflow-hidden rounded-2xl border border-border/70 shadow-sm">
+      <div className="bg-card overflow-hidden rounded-2xl shadow-sm ring-1 ring-foreground/[0.06]">
         <Table aria-label={caption}>
           <caption className="sr-only">{caption}</caption>
-          <TableHeader className="bg-muted/30">
+          <TableHeader>
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id} className="hover:bg-transparent">
                 {group.headers.map((header) => {
@@ -330,17 +333,17 @@ export function DataTable<T extends RowData>({
                   return (
                     <TableHead
                       key={header.id}
-                      className={cn('text-muted-foreground h-10 text-xs font-medium', col?.align === 'right' && 'text-right', col?.align === 'center' && 'text-center', header.column.id === '__select' && 'w-10')}
+                      className={cn('text-muted-foreground h-11 text-xs font-medium', col?.align === 'right' && 'text-right', col?.align === 'center' && 'text-center', header.column.id === '__select' && 'w-10')}
                       aria-sort={sorted === 'asc' ? 'ascending' : sorted === 'desc' ? 'descending' : undefined}
                     >
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
-                          className={cn('hover:text-foreground inline-flex items-center gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring', col?.align === 'right' && 'flex-row-reverse')}
+                          className={cn('group/sort hover:text-foreground inline-flex items-center gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring', col?.align === 'right' && 'flex-row-reverse')}
                         >
                           {col?.header}
-                          {sorted === 'asc' ? <ArrowUp className="size-3.5" /> : sorted === 'desc' ? <ArrowDown className="size-3.5" /> : <ArrowUpDown className="size-3.5 opacity-40" />}
+                          {sorted === 'asc' ? <ArrowUp className="size-3.5" /> : sorted === 'desc' ? <ArrowDown className="size-3.5" /> : <ArrowUpDown className="size-3.5 opacity-0 transition-opacity group-hover/sort:opacity-50 group-focus-visible/sort:opacity-60" />}
                         </button>
                       ) : (
                         <table.FlexRender header={header} />
@@ -373,7 +376,7 @@ export function DataTable<T extends RowData>({
                     return (
                       <TableCell
                         key={cell.id}
-                        className={cn(compact ? 'py-1.5' : 'py-2.5', col?.align === 'right' && 'tabular text-right', col?.align === 'center' && 'text-center', col?.className)}
+                        className={cn(compact ? 'py-2' : 'py-3.5', col?.align === 'right' ? 'tabular text-right' : NOWRAP_COLUMN.test(col?.id ?? '') ? 'whitespace-nowrap' : 'whitespace-normal', col?.align === 'center' && 'text-center', col?.className)}
                       >
                         <table.FlexRender cell={cell} />
                       </TableCell>

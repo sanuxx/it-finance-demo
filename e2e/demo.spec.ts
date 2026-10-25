@@ -24,15 +24,16 @@ test('every sidebar link opens a real screen without console errors', async ({ p
   page.on('pageerror', (e) => errors.push(e.message))
   await page.goto('./')
   await expect(page.locator('main h1').first()).toBeVisible()
-  // Expand all groups through the preferences, then collect links.
-  await page.evaluate(() => {
-    const k = 'it-finance-demo:v1:prefs'
-    localStorage.setItem(k, JSON.stringify({ ...JSON.parse(localStorage.getItem(k) || '{}'), collapsedNavGroups: [] }))
-  })
-  await page.reload()
-  await expect(page.locator('main h1').first()).toBeVisible()
-  const hrefs = await page.locator('nav a[href^="#/"]').evaluateAll((els) => [...new Set(els.map((e) => e.getAttribute('href')!))])
-  expect(hrefs.length).toBeGreaterThan(80)
+  // The sidebar is an accordion: open each section in turn and collect its links.
+  const hrefs = new Set<string>()
+  const headers = page.locator('aside nav button[aria-expanded]')
+  const count = await headers.count()
+  for (let i = 0; i < count; i++) {
+    const header = headers.nth(i)
+    if ((await header.getAttribute('aria-expanded')) !== 'true') await header.click()
+    for (const h of await page.locator('aside nav a[href^="#/"]').evaluateAll((els) => els.map((e) => e.getAttribute('href')!))) hrefs.add(h)
+  }
+  expect(hrefs.size).toBeGreaterThan(80)
   for (const href of hrefs) {
     await page.goto(`./${href}`)
     await expect(page.locator('main h1').first(), href).toBeVisible()
