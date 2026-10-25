@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Interactive demo of a finance management platform for IT and software companies. All data is fictional and stored in your browser." />
+    <meta name="robots" content="noindex" />
+    <title>Ledgerline — IT & Software Finance (Interactive Demo)</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      try {
+        var p = JSON.parse(localStorage.getItem('it-finance-demo:v1:prefs') || '{}')
+        var dark = p.theme === 'dark' || (p.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        if (dark) document.documentElement.classList.add('dark')
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>This interactive demo needs JavaScript enabled.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
