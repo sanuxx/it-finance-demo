@@ -5,51 +5,51 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.875rem;
-  --background: oklch(0.975 0.007 268);
-  --foreground: oklch(0.24 0.025 268);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.025 268);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.025 268);
-  --primary: oklch(0.55 0.16 270);
-  --primary-foreground: oklch(0.99 0.004 270);
-  --secondary: oklch(0.955 0.012 268);
-  --secondary-foreground: oklch(0.3 0.03 268);
-  --muted: oklch(0.96 0.009 268);
-  --muted-foreground: oklch(0.52 0.025 268);
-  --accent: oklch(0.945 0.025 270);
-  --accent-foreground: oklch(0.3 0.06 270);
+  --radius: 1.25rem;
+  --background: oklch(0.955 0.025 250);
+  --foreground: oklch(0.25 0.05 258);
+  --card: oklch(1 0.005 250 / 0.72);
+  --card-foreground: oklch(0.25 0.05 258);
+  --popover: oklch(0.995 0.004 250);
+  --popover-foreground: oklch(0.25 0.05 258);
+  --primary: oklch(0.38 0.13 262);
+  --primary-foreground: oklch(0.99 0.004 250);
+  --secondary: oklch(0.93 0.03 250);
+  --secondary-foreground: oklch(0.3 0.08 260);
+  --muted: oklch(0.945 0.02 250);
+  --muted-foreground: oklch(0.5 0.045 255);
+  --accent: oklch(0.92 0.045 250);
+  --accent-foreground: oklch(0.32 0.11 261);
   --destructive: oklch(0.58 0.19 22);
-  --border: oklch(0.925 0.01 268);
-  --input: oklch(0.9 0.012 268);
-  --ring: oklch(0.62 0.14 270);
+  --border: oklch(0.89 0.025 250);
+  --input: oklch(0.87 0.03 250);
+  --ring: oklch(0.58 0.19 258);
   --success: oklch(0.55 0.12 160);
   --warning: oklch(0.72 0.13 75);
-  --info: oklch(0.58 0.12 245);
-  --chart-1: #2a78d6;
+  --info: oklch(0.58 0.17 252);
+  --chart-1: #1e5bd8;
   --chart-2: #eb6834;
   --chart-3: #1baf7a;
   --chart-4: #eda100;
   --chart-5: #e87ba4;
-  --chart-6: #008300;
+  --chart-6: #3aa0f0;
   --chart-7: #6250d6;
   --chart-8: #e34948;
-  --sidebar: oklch(0.995 0.003 268);
-  --sidebar-foreground: oklch(0.34 0.03 268);
-  --sidebar-accent: oklch(0.945 0.03 270);
-  --sidebar-accent-foreground: oklch(0.38 0.14 270);
-  --sidebar-border: oklch(0.94 0.008 268);
+  --sidebar: oklch(1 0.005 250 / 0.65);
+  --sidebar-foreground: oklch(0.3 0.06 258);
+  --sidebar-accent: oklch(0.38 0.13 262);
+  --sidebar-accent-foreground: oklch(0.99 0.004 250);
+  --sidebar-border: oklch(0.9 0.02 250);
 }
 
 .dark {
-  --background: oklch(0.18 0.018 270);
+  --background: oklch(0.17 0.04 262);
   --foreground: oklch(0.95 0.008 268);
-  --card: oklch(0.225 0.02 270);
+  --card: oklch(0.25 0.05 262 / 0.7);
   --card-foreground: oklch(0.95 0.008 268);
   --popover: oklch(0.24 0.02 270);
   --popover-foreground: oklch(0.95 0.008 268);
-  --primary: oklch(0.7 0.14 272);
+  --primary: oklch(0.68 0.17 255);
   --primary-foreground: oklch(0.16 0.03 270);
   --secondary: oklch(0.27 0.02 270);
   --secondary-foreground: oklch(0.93 0.008 268);
@@ -72,18 +72,18 @@
   --chart-6: #008300;
   --chart-7: #9085e9;
   --chart-8: #e66767;
-  --sidebar: oklch(0.205 0.02 270);
+  --sidebar: oklch(0.22 0.05 262 / 0.7);
   --sidebar-foreground: oklch(0.86 0.012 268);
-  --sidebar-accent: oklch(0.3 0.045 272);
+  --sidebar-accent: oklch(0.45 0.15 260);
   --sidebar-accent-foreground: oklch(0.96 0.01 268);
   --sidebar-border: oklch(0.27 0.016 270);
 }
 
 @theme {
-  --shadow-xs: 0 1px 2px 0 rgb(40 40 100 / 0.04);
-  --shadow-sm: 0 1px 2px 0 rgb(40 40 100 / 0.04), 0 4px 16px -6px rgb(40 40 100 / 0.08);
-  --shadow-md: 0 2px 4px -1px rgb(40 40 100 / 0.04), 0 10px 28px -10px rgb(40 40 100 / 0.14);
-  --shadow-lg: 0 4px 8px -2px rgb(40 40 100 / 0.05), 0 22px 48px -16px rgb(40 40 100 / 0.2);
+  --shadow-xs: 0 1px 2px 0 rgb(30 70 160 / 0.04);
+  --shadow-sm: 0 1px 2px 0 rgb(30 70 160 / 0.04), 0 4px 16px -6px rgb(30 70 160 / 0.08);
+  --shadow-md: 0 2px 4px -1px rgb(30 70 160 / 0.04), 0 10px 28px -10px rgb(30 70 160 / 0.14);
+  --shadow-lg: 0 4px 8px -2px rgb(30 70 160 / 0.05), 0 22px 48px -16px rgb(30 70 160 / 0.2);
 }
 
 @theme inline {
@@ -139,8 +139,16 @@
     color-scheme: dark;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground min-h-svh bg-fixed antialiased;
+    background-image:
+      radial-gradient(60rem 40rem at 10% -10%, oklch(0.88 0.07 245 / 0.65), transparent 60%),
+      radial-gradient(50rem 36rem at 100% 0%, oklch(0.9 0.05 265 / 0.6), transparent 60%);
     font-feature-settings: "cv11", "ss01";
+  }
+  .dark body {
+    background-image:
+      radial-gradient(60rem 40rem at 10% -10%, oklch(0.3 0.12 258 / 0.55), transparent 60%),
+      radial-gradient(50rem 36rem at 100% 0%, oklch(0.28 0.09 270 / 0.5), transparent 60%);
   }
   .tabular {
     font-variant-numeric: tabular-nums;

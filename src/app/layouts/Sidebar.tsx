@@ -34,7 +34,7 @@ export function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; 
               to={g.items[0]!.path}
               onClick={onNavigate}
               aria-label={g.label}
-              className={cn('mx-auto flex size-10 items-center justify-center rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring', active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/60')}
+              className={cn('mx-auto flex size-10 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring', active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/60')}
             >
               <Icon className="size-[18px]" />
             </NavLink>
@@ -51,7 +51,7 @@ export function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; 
           onClick={() => toggleGroup(g.key)}
           aria-expanded={open}
           className={cn(
-            'flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
+            'flex w-full items-center gap-3 rounded-full px-3 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
             active ? 'text-sidebar-accent-foreground' : 'text-sidebar-foreground/75 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',
           )}
         >
@@ -69,7 +69,7 @@ export function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; 
                   onClick={onNavigate}
                   className={({ isActive }) =>
                     cn(
-                      'block truncate rounded-lg px-3 py-1.5 text-[13px] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
+                      'block truncate rounded-full px-3 py-1.5 text-[13px] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
                       isActive ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' : 'text-sidebar-foreground/65 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',
                     )
                   }
@@ -87,7 +87,7 @@ export function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; 
   return (
     <div className="flex h-full flex-col">
       <Link to="/dashboard" onClick={onNavigate} className={cn('flex h-16 shrink-0 items-center gap-3 px-5 outline-none focus-visible:ring-2 focus-visible:ring-ring', collapsed && 'justify-center px-0')}>
-        <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-xl shadow-sm">
+        <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full shadow-sm">
           <Wallet className="size-[18px]" />
         </span>
         {!collapsed ? (
@@ -116,7 +116,7 @@ export function Sidebar() {
   const collapsed = usePreferences((s) => s.sidebarCollapsed)
   const set = usePreferences((s) => s.set)
   return (
-    <aside className={cn('bg-sidebar text-sidebar-foreground border-sidebar-border/60 no-print sticky top-0 hidden h-svh shrink-0 flex-col border-r lg:flex', collapsed ? 'w-[4.5rem]' : 'w-[16.5rem]')}>
+    <aside className={cn('bg-sidebar text-sidebar-foreground border-sidebar-border/60 no-print sticky top-0 hidden h-svh shrink-0 flex-col border-r backdrop-blur-xl lg:flex', collapsed ? 'w-[4.5rem]' : 'w-[16.5rem]')}>
       <SidebarContent collapsed={collapsed} />
       <button
         type="button"
